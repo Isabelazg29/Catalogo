@@ -1,0 +1,58 @@
+﻿@model IEnumerable<Addventure.Models.Pedido>
+
+@{
+    ViewData["Title"] = "Lista de Pedidos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="text-center my-4">Lista de Pedidos</h1>
+
+<div class="container">
+    <div class="mb-4 text-end">
+        <a asp-action="Create" class="btn btn-success">Crear Nuevo Pedido</a>
+    </div>
+
+    <table class="table table-striped table-hover shadow-sm">
+        <thead class="table-primary">
+            <tr>
+                <th scope="col">
+                    @Html.DisplayNameFor(model => model.Cantidad)
+                </th>
+                <th scope="col">
+                    @Html.DisplayNameFor(model => model.FechaPedido)
+                </th>
+                <th scope="col">
+                    @Html.DisplayNameFor(model => model.Cliente)
+                </th>
+                <th scope="col">
+                    @Html.DisplayNameFor(model => model.Producto)
+                </th>
+                <th scope="col" class="text-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Cantidad)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FechaPedido)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Cliente.ClienteId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Producto.ProductoId)
+                    </td>
+                    <td class="text-center">
+                        <a asp-action="Edit" asp-route-id="@item.PedidoId" class="btn btn-warning btn-sm mx-1">Editar</a>
+                        <a asp-action="Details" asp-route-id="@item.PedidoId" class="btn btn-info btn-sm mx-1">Detalles</a>
+                        <a asp-action="Delete" asp-route-id="@item.PedidoId" class="btn btn-danger btn-sm mx-1">Eliminar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
