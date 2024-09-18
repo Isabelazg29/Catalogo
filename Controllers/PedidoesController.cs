@@ -1,31 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Addventure.Models;
 
 namespace Addventure.Controllers
 {
-    public class PedidoesController : Controller
+    public class ProductoesController : Controller
     {
         private readonly AddventureContext _context;
 
-        public PedidoesController(AddventureContext context)
+        public ProductoesController(AddventureContext context)
         {
             _context = context;
         }
 
-        // GET: Pedidoes
+        // GET: Productoes
         public async Task<IActionResult> Index()
         {
-            var addventureContext = _context.Pedidos.Include(p => p.Cliente).Include(p => p.Producto);
-            return View(await addventureContext.ToListAsync());
+            return View(await _context.Productos.ToListAsync());
         }
 
-        // GET: Pedidoes/Details/5
+        // GET: Productoes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,45 +30,37 @@ namespace Addventure.Controllers
                 return NotFound();
             }
 
-            var pedido = await _context.Pedidos
-                .Include(p => p.Cliente)
-                .Include(p => p.Producto)
-                .FirstOrDefaultAsync(m => m.PedidoId == id);
-            if (pedido == null)
+            var producto = await _context.Productos
+                .FirstOrDefaultAsync(m => m.ProductoId == id);
+            if (producto == null)
             {
                 return NotFound();
             }
 
-            return View(pedido);
+            return View(producto);
         }
 
-        // GET: Pedidoes/Create
+        // GET: Productoes/Create
         public IActionResult Create()
         {
-            ViewData["ClienteId"] = new SelectList(_context.Clientes, "ClienteId", "ClienteId");
-            ViewData["ProductoId"] = new SelectList(_context.Productos, "ProductoId", "ProductoId");
             return View();
         }
 
-        // POST: Pedidoes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Productoes/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PedidoId,ClienteId,ProductoId,Cantidad,FechaPedido")] Pedido pedido)
+        public async Task<IActionResult> Create([Bind("ProductoId,NombreProducto,Precio")] Producto producto)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(pedido);
+                _context.Add(producto);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ClienteId"] = new SelectList(_context.Clientes, "ClienteId", "ClienteId", pedido.ClienteId);
-            ViewData["ProductoId"] = new SelectList(_context.Productos, "ProductoId", "ProductoId", pedido.ProductoId);
-            return View(pedido);
+            return View(producto);
         }
 
-        // GET: Pedidoes/Edit/5
+        // GET: Productoes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -79,24 +68,20 @@ namespace Addventure.Controllers
                 return NotFound();
             }
 
-            var pedido = await _context.Pedidos.FindAsync(id);
-            if (pedido == null)
+            var producto = await _context.Productos.FindAsync(id);
+            if (producto == null)
             {
                 return NotFound();
             }
-            ViewData["ClienteId"] = new SelectList(_context.Clientes, "ClienteId", "ClienteId", pedido.ClienteId);
-            ViewData["ProductoId"] = new SelectList(_context.Productos, "ProductoId", "ProductoId", pedido.ProductoId);
-            return View(pedido);
+            return View(producto);
         }
 
-        // POST: Pedidoes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Productoes/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PedidoId,ClienteId,ProductoId,Cantidad,FechaPedido")] Pedido pedido)
+        public async Task<IActionResult> Edit(int id, [Bind("ProductoId,NombreProducto,Precio")] Producto producto)
         {
-            if (id != pedido.PedidoId)
+            if (id != producto.ProductoId)
             {
                 return NotFound();
             }
@@ -105,12 +90,12 @@ namespace Addventure.Controllers
             {
                 try
                 {
-                    _context.Update(pedido);
+                    _context.Update(producto);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PedidoExists(pedido.PedidoId))
+                    if (!ProductoExists(producto.ProductoId))
                     {
                         return NotFound();
                     }
@@ -121,12 +106,10 @@ namespace Addventure.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ClienteId"] = new SelectList(_context.Clientes, "ClienteId", "ClienteId", pedido.ClienteId);
-            ViewData["ProductoId"] = new SelectList(_context.Productos, "ProductoId", "ProductoId", pedido.ProductoId);
-            return View(pedido);
+            return View(producto);
         }
 
-        // GET: Pedidoes/Delete/5
+        // GET: Productoes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -134,36 +117,45 @@ namespace Addventure.Controllers
                 return NotFound();
             }
 
-            var pedido = await _context.Pedidos
-                .Include(p => p.Cliente)
-                .Include(p => p.Producto)
-                .FirstOrDefaultAsync(m => m.PedidoId == id);
-            if (pedido == null)
+            var producto = await _context.Productos
+                .FirstOrDefaultAsync(m => m.ProductoId == id);
+            if (producto == null)
             {
                 return NotFound();
             }
 
-            return View(pedido);
+            return View(producto);
         }
 
-        // POST: Pedidoes/Delete/5
+        // POST: Productoes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var pedido = await _context.Pedidos.FindAsync(id);
-            if (pedido != null)
+            var producto = await _context.Productos.FindAsync(id);
+
+            if (producto == null)
             {
-                _context.Pedidos.Remove(pedido);
+                return NotFound();
             }
 
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Productos.Remove(producto);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                TempData["ErrorMessage"] = "No se puede eliminar este producto porque está asociado con un pedido.";
+                return RedirectToAction(nameof(Index));
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PedidoExists(int id)
+        private bool ProductoExists(int id)
         {
-            return _context.Pedidos.Any(e => e.PedidoId == id);
+            return _context.Productos.Any(e => e.ProductoId == id);
         }
     }
 }
