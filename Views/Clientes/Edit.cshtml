@@ -1,4 +1,4 @@
-﻿@model Addventure.Models.Cliente
+@model Addventure.Models.Cliente
 
 @{
     ViewData["Title"] = "Edit";
@@ -32,7 +32,13 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Volver a la lista</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
 </div>
 
 @section Scripts {
