@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Addventure.Models.Cliente>
+@model IEnumerable<Addventure.Models.Cliente>
 
 @{
     ViewData["Title"] = "Lista de Clientes";
@@ -8,6 +8,15 @@
 <h1 class="text-center my-4">Lista de Clientes</h1>
 
 <div class="container">
+    <!-- Mostrar el mensaje de error si existe -->
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
     <div class="mb-4 text-end">
         <a asp-action="Create" class="btn btn-success">Crear Nuevo Cliente</a>
     </div>
@@ -37,10 +46,13 @@
                     <td class="text-center">
                         <a asp-action="Edit" asp-route-id="@item.ClienteId" class="btn btn-warning btn-sm mx-1">Editar</a>
                         <a asp-action="Details" asp-route-id="@item.ClienteId" class="btn btn-info btn-sm mx-1">Detalles</a>
-                        <a asp-action="Delete" asp-route-id="@item.ClienteId" class="btn btn-danger btn-sm mx-1">Eliminar</a>
+                        <form asp-action="Delete" asp-route-id="@item.ClienteId" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-danger btn-sm mx-1">Eliminar</button>
+                        </form>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
+
